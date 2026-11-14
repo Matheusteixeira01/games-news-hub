@@ -1,0 +1,84 @@
+# Atualiza o Games News Hub de hora em hora e republica o site no GitHub Pages.
+#
+# Fluxo de cada execução:
+#   1. Baixa o código e o banco de notícias (guardado na branch "dados")
+#   2. Roda: coletar -> processar -> gerar site   (python src/atualizar.py)
+#   3. Salva o banco atualizado de volta na branch "dados"
+#   4. Publica a pasta site/ no GitHub Pages
+name: Atualizar hub
+
+on:
+  schedule:
+    - cron: "7 * * * *"        # todo hora, no minuto 7 (evita o congestionamento da hora cheia)
+  workflow_dispatch:           # botão "Run workflow" para rodar na hora, manualmente
+  push:
+    branches: [main]           # também roda quando você muda o código/configuração
+    paths: ["src/**", "config/**", "requirements.txt", ".github/workflows/**"]
+
+# Duas execuções nunca ao mesmo tempo (evita brigar pelo banco).
+concurrency:
+  group: atualizar-hub
+  cancel-in-progress: false
+
+permissions:
+  contents: write     # para salvar o banco na branch "dados"
+  pages: write        # para publicar no Pages
+  id-token: write     # exigido pelo deploy do Pages
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Restaurar o banco (branch "dados")
+        run: |
+          mkdir -p data
+          # Na primeira execução a branch ainda não existe: tudo bem, o banco nasce vazio.
+          git fetch origin dados --depth=1 || true
+          git show origin/dados:noticias.db > data/noticias.db || rm -f data/noticias.db
+
+      - name: Coletar, processar e gerar o site
+        run: python src/atualizar.py
+
+      - name: Salvar o banco na branch "dados"
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          # Cria um repositório minúsculo só com o banco e sobrescreve a branch "dados".
+          # Assim o histórico da branch main não enche de commits automáticos.
+          mkdir /tmp/dados && cp data/noticias.db /tmp/dados/
+          cd /tmp/dados
+          git init -q -b dados
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add noticias.db
+          git commit -q -m "Banco atualizado em $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git" dados
+
+      - name: Preparar o site para o Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  publicar:
+    needs: atualizar
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

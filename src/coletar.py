@@ -9,7 +9,7 @@ import html
 import re
 import socket
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from time import mktime
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
@@ -23,6 +23,7 @@ ARQUIVO_BANCO = RAIZ / "data" / "noticias.db"
 
 USER_AGENT = "GamesNewsHub/0.1 (leitor RSS pessoal)"
 MAX_RESUMO = 200  # limite do trecho guardado (direitos autorais)
+DIAS_GUARDAR = 30  # notícias mais antigas que isso são apagadas (mantém o banco pequeno)
 
 # Se um portal travar, desistimos depois de 20 segundos e seguimos para o próximo.
 socket.setdefaulttimeout(20)
@@ -89,11 +90,14 @@ def coletar_fonte(banco, fonte):
     """Lê um feed e grava as notícias novas. Devolve (novas, total_no_feed)."""
     feed = feedparser.parse(fonte["url"], agent=USER_AGENT)
     agora = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    limite = (datetime.now(timezone.utc) - timedelta(days=DIAS_GUARDAR)).isoformat(timespec="seconds")
     novas = 0
     for e in feed.entries:
         titulo = limpar_texto(e.get("title"))
         link = e.get("link")
         if not titulo or not link:
+            continue
+        if data_da_entrada(e) < limite:  # velha demais: nem entra (senão seria apagada em seguida)
             continue
         resumo = cortar(limpar_texto(e.get("summary")))
         # INSERT OR IGNORE: se o link já existe, simplesmente ignora.
@@ -122,6 +126,12 @@ def main():
             print(f"{fonte['nome']:<20} {total:>3} no feed, {novas:>3} novas")
         except Exception as erro:  # um portal com problema não derruba os outros
             print(f"{fonte['nome']:<20} ERRO: {erro}")
+    # Limpeza: apaga notícias com mais de DIAS_GUARDAR dias.
+    limite = (datetime.now(timezone.utc) - timedelta(days=DIAS_GUARDAR)).isoformat(timespec="seconds")
+    apagadas = banco.execute("DELETE FROM noticias WHERE publicado_em < ?", (limite,)).rowcount
+    banco.commit()
+    if apagadas:
+        print(f"Apagadas {apagadas} notícias com mais de {DIAS_GUARDAR} dias")
     total_banco = banco.execute("SELECT COUNT(*) FROM noticias").fetchone()[0]
     print(f"\nNovas nesta rodada: {total_novas} | Total no banco: {total_banco}")
     banco.close()

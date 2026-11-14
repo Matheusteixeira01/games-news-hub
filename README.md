@@ -9,7 +9,7 @@ Também gera um kit diário de conteúdo "sem rosto" (roteiros, carrosséis, leg
 ## Status das fases
 
 - [x] Fase 0 – Setup inicial
-- [ ] Fase 1 – Coleta de feeds
+- [x] Fase 1 – Coleta de feeds
 - [ ] Fase 2 – Processamento
 - [ ] Fase 3 – Site (hub)
 - [ ] Fase 4 – Automação (GitHub Actions)
@@ -33,6 +33,20 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
+
+## Como usar (Fase 1 – coleta)
+
+```powershell
+# 1. Testar quais feeds de config/sources.yaml estão respondendo
+.\.venv\Scripts\python.exe src\check_feeds.py
+
+# 2. Coletar as notícias e salvar em data/noticias.db (pode rodar quantas vezes quiser: não duplica)
+.\.venv\Scripts\python.exe src\coletar.py
+```
+
+- **Fontes:** edite `config/sources.yaml`. Use `ativo: false` para desligar um portal.
+- **Banco:** `data/noticias.db` (SQLite). Tabela `noticias`: fonte, idioma, titulo, link (único), resumo (máx. 200 caracteres), publicado_em, coletado_em.
+- **Feeds testados em 14/11/2026:** 20 funcionando (8 BR, 12 internacionais). Sem feed funcional: The Enemy, Jovem Nerd, Game Arena.
 
 ## Regras de direitos autorais
 

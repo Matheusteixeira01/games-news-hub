@@ -6,6 +6,9 @@ venv/
 *.egg-info/
 .pytest_cache/
 
+# Banco local (decisão sobre versionar fica para a Fase 4)
+data/*.db
+
 # Segredos (nunca commitar)
 .env
 *.key

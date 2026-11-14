@@ -1,0 +1,95 @@
+# Fontes de notícias (feeds RSS) do Games News Hub.
+#
+# Como editar:
+#  - Para adicionar um portal: copie um bloco "- nome: ..." e ajuste.
+#  - Para desligar um portal sem apagar: troque "ativo: true" por "ativo: false".
+#  - idioma: "pt" (português) ou "en" (inglês).
+#
+# Última checagem dos feeds: 2026-11-14 (rode "python src/check_feeds.py" para rechecar).
+#
+# Descartados por não terem feed funcional: The Enemy, Jovem Nerd, Game Arena.
+
+fontes:
+  # ---------- Brasil ----------
+  - nome: Adrenaline
+    idioma: pt
+    url: https://adrenaline.com.br/feed/
+    ativo: true
+  - nome: Voxel (TecMundo)
+    idioma: pt
+    url: https://rss.tecmundo.com.br/feed/voxel
+    ativo: true
+  - nome: IGN Brasil
+    idioma: pt
+    url: https://br.ign.com/feed.xml
+    ativo: true
+  - nome: Arkade
+    idioma: pt
+    url: https://arkade.com.br/feed/
+    ativo: true
+  - nome: Memória BIT
+    idioma: pt
+    url: https://www.memoriabit.com.br/feed/
+    ativo: true
+  - nome: Game Blast
+    idioma: pt
+    url: https://www.gameblast.com.br/feeds/posts/default?alt=rss
+    ativo: true
+  - nome: Nintendo Blast
+    idioma: pt
+    url: https://www.nintendoblast.com.br/feeds/posts/default?alt=rss
+    ativo: true
+  - nome: PSX Brasil
+    idioma: pt
+    url: https://www.psxbrasil.com.br/feed/
+    ativo: true
+
+  # ---------- Internacional ----------
+  - nome: IGN
+    idioma: en
+    url: https://feeds.feedburner.com/ign/all
+    ativo: true
+  - nome: GameSpot
+    idioma: en
+    url: https://www.gamespot.com/feeds/mashup/
+    ativo: true
+  - nome: Eurogamer
+    idioma: en
+    url: https://www.eurogamer.net/feed
+    ativo: true
+  - nome: PC Gamer
+    idioma: en
+    url: https://www.pcgamer.com/rss/
+    ativo: true
+  - nome: Polygon
+    idioma: en
+    url: https://www.polygon.com/rss/index.xml
+    ativo: true
+  - nome: Kotaku
+    idioma: en
+    url: https://kotaku.com/rss
+    ativo: true
+  - nome: VGC
+    idioma: en
+    url: https://www.videogameschronicle.com/feed/
+    ativo: true
+  - nome: Rock Paper Shotgun
+    idioma: en
+    url: https://www.rockpapershotgun.com/feed
+    ativo: true
+  - nome: GamesIndustry.biz
+    idioma: en
+    url: https://www.gamesindustry.biz/feed
+    ativo: true
+  - nome: Nintendo Life
+    idioma: en
+    url: https://www.nintendolife.com/feeds/latest
+    ativo: true
+  - nome: Push Square
+    idioma: en
+    url: https://www.pushsquare.com/feeds/latest
+    ativo: true
+  - nome: Pure Xbox
+    idioma: en
+    url: https://www.purexbox.com/feeds/latest
+    ativo: true

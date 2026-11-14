@@ -48,4 +48,7 @@ pip install -r requirements.txt
 - Fase 2: processar só a janela recente (3 dias); notícias antigas mantêm os valores antigos.
 - Fase 3: site 100% estático num único `index.html` com dados embutidos (`|tojson`); funciona abrindo o arquivo direto. Cards montados via DOM/`textContent` (feeds são dados não confiáveis). Sem imagens de terceiros.
 - Fase 3: `site/index.html` no .gitignore (gerado). Para SEO/público no futuro, considerar páginas por assunto renderizadas no servidor (Jinja2).
+- Fase 4: workflow `.github/workflows/atualizar.yml` (cron `7 * * * *`, manual e push em src/config). Banco persistido na branch órfã `dados` (force-push a cada rodada) para não poluir o histórico do `main`. Deploy via `actions/deploy-pages` (Pages com build_type=workflow). Site: https://matheusteixeira01.github.io/games-news-hub/
+- Fase 4: banco limita-se a 30 dias (`DIAS_GUARDAR`). Primeira execução real: os 20 feeds responderam a partir dos servidores do GitHub.
+- Qualquer push ao GitHub ou mudança na conta exige confirmação do usuário antes.
 - PyYAML adicionado para ler `sources.yaml` (feedparser/Jinja2/rapidfuzz não leem YAML).

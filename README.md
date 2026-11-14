@@ -12,7 +12,7 @@ Também gera um kit diário de conteúdo "sem rosto" (roteiros, carrosséis, leg
 - [x] Fase 1 – Coleta de feeds
 - [x] Fase 2 – Processamento
 - [x] Fase 3 – Site (hub)
-- [ ] Fase 4 – Automação (GitHub Actions)
+- [x] Fase 4 – Automação (GitHub Actions)
 - [ ] Fase 5 – Kit de conteúdo
 - [ ] Fase 6 – Monetização (planejamento)
 
@@ -79,6 +79,24 @@ Depois, abra `site/index.html` no navegador (duplo clique; não precisa de servi
 - **Aparência:** responsivo (testado em 375 px) e com tema claro/escuro automático.
 - **Segurança:** o JS monta os cards com `textContent` (sem injetar HTML do feed) e só aceita links `http(s)`.
 - `site/index.html` é gerado e fica no `.gitignore` (a Fase 4 o publica via Actions).
+
+## Automação (Fase 4 – GitHub Actions + Pages)
+
+**Site no ar:** https://matheusteixeira01.github.io/games-news-hub/ (atualiza sozinho de hora em hora, no minuto 7).
+
+Como funciona (`.github/workflows/atualizar.yml`):
+1. O GitHub liga uma máquina Linux, baixa o código e o banco (guardado na branch `dados`).
+2. Roda `python src/atualizar.py` (coletar, processar e gerar o site).
+3. Salva o banco atualizado na branch `dados` (sobrescrita a cada rodada, sem poluir o `main`).
+4. Publica a pasta `site/` no GitHub Pages.
+
+Dia a dia, pelo site do GitHub (aba **Actions**):
+- **Ver execuções:** Actions, depois "Atualizar hub". Verde = ok, vermelho = erro (clique e abra o passo com ❌ para ver o log).
+- **Rodar na hora:** Actions, "Atualizar hub", **Run workflow**. Ou pelo terminal: `gh workflow run "Atualizar hub"`.
+- **Mudar fontes ou categorias:** edite `config/sources.yaml` ou `config/categories.yaml`, faça commit e push. O workflow roda sozinho e republica.
+- **Se o Pages sumir:** Settings, Pages, e confira se "Source" está em **GitHub Actions**.
+- **Agendamento pausado:** o GitHub pausa agendamentos de repositórios públicos sem atividade por 60 dias. Se acontecer, ative de novo em Actions.
+- O banco guarda só **30 dias** de notícias (`DIAS_GUARDAR` em `src/coletar.py`).
 
 ## Regras de direitos autorais
 

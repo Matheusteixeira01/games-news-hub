@@ -32,6 +32,8 @@ pip install -r requirements.txt
 - `python src/check_feeds.py` – testa os feeds de `config/sources.yaml`
 - `python src/coletar.py` – coleta e grava em `data/noticias.db` (idempotente: `link` é UNIQUE)
 - `python src/processar.py [--dias N]` – agrupa, classifica e pontua (grava `grupo_id`, `n_fontes`, `categorias`, `relevancia`)
+- `python src/gerar_site.py [--dias N]` – gera `site/index.html` (Jinja2 + JS no navegador)
+- `python src/atualizar.py` – pipeline completo: coletar -> processar -> gerar site
 (Comandos das próximas fases serão adicionados aqui.)
 
 ## Fases
@@ -44,4 +46,6 @@ pip install -r requirements.txt
 - Fase 2: agrupamento com `rapidfuzz.process.extract` (token_sort_ratio >= 78; token_set_ratio só vale com >= 3 palavras em comum). Evitei `cdist` porque exige numpy (dependência pesada).
 - Fase 2: relevância = 10 × fontes distintas no grupo + bônus de recência (0–5). Títulos de colunas recorrentes (`ignorar_agrupamento`) nunca agrupam.
 - Fase 2: processar só a janela recente (3 dias); notícias antigas mantêm os valores antigos.
+- Fase 3: site 100% estático num único `index.html` com dados embutidos (`|tojson`); funciona abrindo o arquivo direto. Cards montados via DOM/`textContent` (feeds são dados não confiáveis). Sem imagens de terceiros.
+- Fase 3: `site/index.html` no .gitignore (gerado). Para SEO/público no futuro, considerar páginas por assunto renderizadas no servidor (Jinja2).
 - PyYAML adicionado para ler `sources.yaml` (feedparser/Jinja2/rapidfuzz não leem YAML).

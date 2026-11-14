@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Games News Hub</title>
+<meta name="description" content="Notícias de games de portais brasileiros e internacionais, agrupadas por assunto.">
+<style>
+  /* ===== Cores (claro e escuro automático) ===== */
+  :root {
+    --bg: #f5f6fa; --card: #ffffff; --texto: #1b1d2a; --suave: #5d6178;
+    --borda: #e1e4ee; --destaque: #6c4cf5; --destaque-fundo: #ece8ff; --quente: #ff6a3d;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1118; --card: #181b26; --texto: #eceef6; --suave: #9aa0b8;
+      --borda: #272b3b; --destaque: #9a82ff; --destaque-fundo: #2a2450; --quente: #ff8a63;
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }   /* garante que o atributo hidden sempre esconde */
+  body { margin: 0; background: var(--bg); color: var(--texto);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: inherit; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 16px; }
+
+  /* ===== Cabeçalho e filtros ===== */
+  header { position: sticky; top: 0; z-index: 10; background: var(--bg);
+    border-bottom: 1px solid var(--borda); padding: 12px 0 10px; }
+  .topo { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  h1 { font-size: 1.25rem; margin: 0; }
+  h1 span { color: var(--destaque); }
+  .atualizado { color: var(--suave); font-size: .8rem; }
+  .busca { width: 100%; margin: 10px 0 8px; padding: 10px 12px; font: inherit; color: var(--texto);
+    background: var(--card); border: 1px solid var(--borda); border-radius: 10px; }
+  .busca:focus { outline: 2px solid var(--destaque); }
+  .filtros { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+  .grupo-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .rotulo { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: var(--suave); }
+  .chip { border: 1px solid var(--borda); background: var(--card); color: var(--texto);
+    padding: 4px 11px; border-radius: 999px; font: inherit; font-size: .85rem; cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--destaque); border-color: var(--destaque); color: #fff; }
+
+  /* ===== Conteúdo ===== */
+  main { padding: 18px 0 40px; }
+  h2 { font-size: 1.05rem; margin: 22px 0 10px; }
+  .vazio { color: var(--suave); text-align: center; padding: 40px 0; }
+  .lista { display: grid; gap: 10px; }
+  .quentes { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--borda); border-radius: 12px; padding: 12px 14px; }
+  .card.quente { border-color: var(--quente); }
+  .card h3 { font-size: 1rem; margin: 4px 0 6px; line-height: 1.35; }
+  .card h3 a { text-decoration: none; }
+  .card h3 a:hover { text-decoration: underline; }
+  .meta { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center;
+    font-size: .78rem; color: var(--suave); }
+  .fonte { font-weight: 600; color: var(--texto); }
+  .selo { background: var(--destaque-fundo); color: var(--destaque); border-radius: 6px;
+    padding: 1px 7px; font-size: .72rem; }
+  .selo.fogo { background: var(--quente); color: #fff; }
+  .resumo { margin: 0 0 6px; font-size: .88rem; color: var(--suave); }
+  .tambem { font-size: .8rem; color: var(--suave); }
+  .tambem a { color: var(--destaque); margin-right: 8px; white-space: nowrap; }
+  .mais { display: block; margin: 18px auto 0; }
+  footer { border-top: 1px solid var(--borda); padding: 16px 0 30px; color: var(--suave); font-size: .8rem; }
+  @media (max-width: 600px) {
+    .atualizado { display: none; }
+    header { position: static; }   /* no celular o cabeçalho rola junto, para sobrar tela */
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="topo">
+      <h1>🎮 Games <span>News Hub</span></h1>
+      <div class="atualizado" id="atualizado"></div>
+    </div>
+    <input class="busca" id="busca" type="search" placeholder="Buscar (ex.: zelda, nvidia, gta)…" autocomplete="off">
+    <div class="filtros">
+      <div class="grupo-chips" id="f-periodo"><span class="rotulo">Período</span></div>
+      <div class="grupo-chips" id="f-idioma"><span class="rotulo">Idioma</span></div>
+      <div class="grupo-chips" id="f-plat"><span class="rotulo">Plataforma</span></div>
+      <div class="grupo-chips" id="f-tema"><span class="rotulo">Tema</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="sec-quentes" hidden>
+    <h2>🔥 Mais cobertos</h2>
+    <div class="quentes" id="quentes"></div>
+  </section>
+  <section>
+    <h2 id="titulo-lista">Últimas notícias</h2>
+    <div class="lista" id="lista"></div>
+    <p class="vazio" id="vazio" hidden>Nenhuma notícia encontrada com esses filtros.</p>
+    <button class="chip mais" id="mais" hidden>Mostrar mais</button>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    Agregador pessoal: mostramos apenas título, trecho curto e link. Todo o conteúdo pertence aos
+    portais de origem; clique para ler a matéria completa na fonte.
+  </div>
+</footer>
+
+<!-- Dados gerados pelo Python (Jinja2 faz o escape seguro com |tojson) -->
+<script id="dados" type="application/json">{{ dados | tojson }}</script>
+
+<script>
+"use strict";
+const DADOS = JSON.parse(document.getElementById("dados").textContent);
+const POR_PAGINA = 40;
+
+// ---------- estado dos filtros ----------
+const estado = { periodo: "hoje", idioma: "todos", plat: null, tema: null, busca: "", limite: POR_PAGINA };
+
+// ---------- utilidades ----------
+const semAcento = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const el = (tag, classe, texto) => {           // cria elemento; textContent evita injeção de HTML
+  const e = document.createElement(tag);
+  if (classe) e.className = classe;
+  if (texto !== undefined) e.textContent = texto;
+  return e;
+};
+const linkSeguro = url => /^https?:\/\//i.test(url) ? url : "#";   // só aceita http(s)
+
+function inicioDoDia() { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); }
+function tempoRelativo(iso) {
+  const min = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (min < 1) return "agora";
+  if (min < 60) return `há ${min} min`;
+  if (min < 1440) return `há ${Math.round(min / 60)} h`;
+  return `há ${Math.round(min / 1440)} d`;
+}
+
+// ---------- chips de filtro ----------
+function criarChips(idContainer, opcoes, chave, unico) {
+  const box = document.getElementById(idContainer);
+  opcoes.forEach(([valor, rotulo]) => {
+    const b = el("button", "chip", rotulo);
+    b.type = "button";
+    b.dataset.valor = valor;
+    b.addEventListener("click", () => {
+      // Plataforma/tema: clicar de novo desmarca. Período/idioma: sempre um selecionado.
+      estado[chave] = (unico || estado[chave] !== valor) ? valor : null;
+      estado.limite = POR_PAGINA;
+      atualizarChips(); desenhar();
+    });
+    box.appendChild(b);
+  });
+}
+function atualizarChips() {
+  document.querySelectorAll(".chip[data-valor]").forEach(b => {
+    const chave = b.parentElement.id.replace("f-", "");
+    const k = { periodo: "periodo", idioma: "idioma", plat: "plat", tema: "tema" }[chave];
+    b.setAttribute("aria-pressed", estado[k] === b.dataset.valor ? "true" : "false");
+  });
+}
+
+// ---------- filtragem ----------
+// Um assunto (grupo) passa se tem pelo menos uma notícia que atende período, idioma e busca.
+function filtrar() {
+  const desde = estado.periodo === "hoje" ? inicioDoDia() : 0;
+  const palavras = semAcento(estado.busca).split(/\s+/).filter(Boolean);
+  const saida = [];
+  for (const g of DADOS.grupos) {
+    if (estado.plat && !g.cats.includes(estado.plat)) continue;
+    if (estado.tema && !g.cats.includes(estado.tema)) continue;
+    const itens = g.itens.filter(i =>
+      new Date(i.p).getTime() >= desde &&
+      (estado.idioma === "todos" || i.i === estado.idioma) &&
+      palavras.every(p => semAcento(i.t + " " + i.f + " " + i.r).includes(p)));
+    if (itens.length) {
+      itens.sort((a, b) => new Date(b.p) - new Date(a.p));
+      saida.push({ g, itens, recente: new Date(itens[0].p).getTime(),
+                   fontes: new Set(itens.map(i => i.f)).size });
+    }
+  }
+  return saida;
+}
+
+// ---------- desenho dos cards ----------
+function card(x, quente) {
+  const principal = x.itens[0];
+  const c = el("article", "card" + (quente ? " quente" : ""));
+
+  const meta = el("div", "meta");
+  meta.appendChild(el("span", "fonte", principal.f));
+  meta.appendChild(el("span", "", "· " + tempoRelativo(principal.p)));
+  if (x.fontes > 1) meta.appendChild(el("span", "selo fogo", `🔥 ${x.fontes} fontes`));
+  x.g.cats.filter(k => k !== "geral").slice(0, 3)
+    .forEach(k => meta.appendChild(el("span", "selo", DADOS.nomes[k] || k)));
+  c.appendChild(meta);
+
+  const h = el("h3");
+  const a = el("a", "", principal.t);
+  a.href = linkSeguro(principal.l); a.target = "_blank"; a.rel = "noopener noreferrer";
+  h.appendChild(a); c.appendChild(h);
+
+  if (principal.r) c.appendChild(el("p", "resumo", principal.r));
+
+  // Outras fontes que cobriram o mesmo assunto (uma por portal)
+  const vistos = new Set([principal.f]);
+  const outras = x.itens.filter(i => !vistos.has(i.f) && vistos.add(i.f));
+  if (outras.length) {
+    const t = el("div", "tambem", "Também em: ");
+    outras.forEach(i => {
+      const l = el("a", "", i.f);
+      l.href = linkSeguro(i.l); l.target = "_blank"; l.rel = "noopener noreferrer";
+      l.title = i.t;
+      t.appendChild(l);
+    });
+    c.appendChild(t);
+  }
+  return c;
+}
+
+function desenhar() {
+  const todos = filtrar();
+  const quentesBox = document.getElementById("quentes");
+  const lista = document.getElementById("lista");
+  quentesBox.replaceChildren(); lista.replaceChildren();
+
+  // "Mais cobertos": até 6 assuntos com 2+ fontes, por relevância (some quando há busca)
+  const quentes = estado.busca ? [] :
+    todos.filter(x => x.fontes >= 2).sort((a, b) => b.g.rel - a.g.rel).slice(0, 6);
+  document.getElementById("sec-quentes").hidden = quentes.length === 0;
+  quentes.forEach(x => quentesBox.appendChild(card(x, true)));
+
+  // Lista principal: o resto, da mais recente para a mais antiga
+  const restantes = todos.filter(x => !quentes.includes(x)).sort((a, b) => b.recente - a.recente);
+  restantes.slice(0, estado.limite).forEach(x => lista.appendChild(card(x, false)));
+
+  document.getElementById("vazio").hidden = todos.length > 0;
+  document.getElementById("mais").hidden = restantes.length <= estado.limite;
+  document.getElementById("titulo-lista").textContent =
+    `Últimas notícias (${todos.length} assuntos)`;
+}
+
+// ---------- inicialização ----------
+criarChips("f-periodo", [["hoje", "Hoje"], ["3d", "3 dias"]], "periodo", true);
+criarChips("f-idioma", [["todos", "Todos"], ["pt", "🇧🇷 PT"], ["en", "🌎 EN"]], "idioma", true);
+criarChips("f-plat", DADOS.plataformas.map(k => [k, DADOS.nomes[k]]), "plat", false);
+criarChips("f-tema", DADOS.temas.map(k => [k, DADOS.nomes[k]]), "tema", false);
+atualizarChips();
+
+let espera;                                    // pequena pausa para não redesenhar a cada tecla
+document.getElementById("busca").addEventListener("input", e => {
+  clearTimeout(espera);
+  espera = setTimeout(() => { estado.busca = e.target.value.trim(); estado.limite = POR_PAGINA; desenhar(); }, 200);
+});
+document.getElementById("mais").addEventListener("click", () => { estado.limite += POR_PAGINA; desenhar(); });
+document.getElementById("atualizado").textContent =
+  "Atualizado " + new Date(DADOS.geradoEm).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+desenhar();
+</script>
+</body>
+</html>

@@ -11,7 +11,7 @@ Também gera um kit diário de conteúdo "sem rosto" (roteiros, carrosséis, leg
 - [x] Fase 0 – Setup inicial
 - [x] Fase 1 – Coleta de feeds
 - [x] Fase 2 – Processamento
-- [ ] Fase 3 – Site (hub)
+- [x] Fase 3 – Site (hub)
 - [ ] Fase 4 – Automação (GitHub Actions)
 - [ ] Fase 5 – Kit de conteúdo
 - [ ] Fase 6 – Monetização (planejamento)
@@ -61,6 +61,24 @@ pip install -r requirements.txt
 - **Colunas novas em `noticias`:** `grupo_id`, `n_fontes`, `categorias`, `relevancia`.
 - **Ajustes finos:** constantes no topo de `src/processar.py` (limiar de similaridade, pontos) e lista `ignorar_agrupamento` em `categories.yaml` (colunas recorrentes como "Talking Point").
 - **Limitações:** alguns portais (IGN) trazem cinema/tecnologia, que caem em `geral`; um filtro "só games" pode vir depois.
+
+## Como usar (Fase 3 – site)
+
+```powershell
+# Só gera o site a partir do banco atual
+.\.venv\Scripts\python.exe src\gerar_site.py
+
+# Ou roda tudo de uma vez: coletar -> processar -> gerar site
+.\.venv\Scripts\python.exe src\atualizar.py
+```
+
+Depois, abra `site/index.html` no navegador (duplo clique; não precisa de servidor).
+
+- **Recursos:** "Mais cobertos" (assuntos com 2+ portais), lista por data, busca, filtros de período (Hoje / 3 dias), idioma, plataforma e tema. Cada card mostra título, trecho curto, fonte e link; "Também em:" lista os outros portais que cobriram o assunto.
+- **Arquivos:** `src/gerar_site.py` (lê o banco), `src/templates/index.html.j2` (HTML + CSS + JS num arquivo só, com Jinja2). Os filtros rodam no navegador.
+- **Aparência:** responsivo (testado em 375 px) e com tema claro/escuro automático.
+- **Segurança:** o JS monta os cards com `textContent` (sem injetar HTML do feed) e só aceita links `http(s)`.
+- `site/index.html` é gerado e fica no `.gitignore` (a Fase 4 o publica via Actions).
 
 ## Regras de direitos autorais
 

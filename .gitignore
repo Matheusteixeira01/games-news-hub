@@ -9,6 +9,9 @@ venv/
 # Banco local (decisão sobre versionar fica para a Fase 4)
 data/*.db
 
+# Site gerado (a Fase 4 publica via GitHub Actions, não precisa versionar)
+site/index.html
+
 # Segredos (nunca commitar)
 .env
 *.key

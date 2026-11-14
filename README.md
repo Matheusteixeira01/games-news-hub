@@ -13,7 +13,7 @@ Também gera um kit diário de conteúdo "sem rosto" (roteiros, carrosséis, leg
 - [x] Fase 2 – Processamento
 - [x] Fase 3 – Site (hub)
 - [x] Fase 4 – Automação (GitHub Actions)
-- [ ] Fase 5 – Kit de conteúdo
+- [x] Fase 5 – Kit de conteúdo
 - [ ] Fase 6 – Monetização (planejamento)
 
 ## Estrutura
@@ -97,6 +97,35 @@ Dia a dia, pelo site do GitHub (aba **Actions**):
 - **Se o Pages sumir:** Settings, Pages, e confira se "Source" está em **GitHub Actions**.
 - **Agendamento pausado:** o GitHub pausa agendamentos de repositórios públicos sem atividade por 60 dias. Se acontecer, ative de novo em Actions.
 - O banco guarda só **30 dias** de notícias (`DIAS_GUARDAR` em `src/coletar.py`).
+
+## Kit de conteúdo sem rosto (Fase 5)
+
+**Na web:** https://matheusteixeira01.github.io/games-news-hub/kit.html (link "🎬 Kit de conteúdo" no topo do hub). Atualiza de hora em hora.
+
+**No seu computador (arquivos para editar):**
+
+```powershell
+.\.venv\Scripts\python.exe src\atualizar.py   # atualiza notícias e site (inclui kit.html)
+.\.venv\Scripts\python.exe src\kit.py         # grava content/AAAA-MM-DD.md (e o Top 5 aos domingos)
+.\.venv\Scripts\python.exe src\kit.py --semanal   # força o Top 5 da semana em qualquer dia
+```
+
+`kit.py` **nunca sobrescreve** um arquivo que já existe em `content/` (para proteger suas edições). Use `--forcar` só se quiser regerar.
+
+**O que cada notícia do kit traz** (5 a 8 por dia, escolhidas pela relevância):
+1. Dados base: título, fonte, link original, categorias, portais que cobriram e resumo.
+2. Roteiro de narração 30–45 s, com tempos: gancho (0–3 s), 3 pontos, fechamento com pergunta e campo "meu comentário".
+3. Sugestão de imagens/vídeos por trecho (só material oficial: trailer, key art, press kit, canal oficial da publicadora).
+4. Carrossel de Instagram: capa, slides de até 20 palavras e slide final com crédito.
+5. Texto animado (frases curtas para legenda sobre música).
+6. Legenda pronta com crédito à fonte e 5 a 8 hashtags.
+7. Prompt pronto para colar no Claude/ChatGPT e refinar o roteiro (opcional).
+
+**Top 5 da semana:** ranking das 5 notícias mais cobertas dos últimos 7 dias, com roteiro em contagem regressiva, carrossel, texto animado e legenda.
+
+**Como funciona o texto:** modelos fixos (sem IA paga) no topo de `src/kit.py` (`GANCHOS`, `POR_QUE_IMPORTA`, `PERGUNTAS`, `MATERIAL`, `HASHTAGS`). Edite-os para ajustar o tom. Os trechos `[ADICIONE: ...]` e `[TRADUZIR]` são para você completar. Notícias só em inglês vêm marcadas com um aviso.
+
+**Na página do kit** cada bloco é um campo editável com botões **Copiar** e **Restaurar**; suas edições ficam salvas no navegador (por notícia). Nada é publicado automaticamente.
 
 ## Regras de direitos autorais
 

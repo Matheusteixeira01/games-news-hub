@@ -34,6 +34,7 @@ pip install -r requirements.txt
 - `python src/processar.py [--dias N]` – agrupa, classifica e pontua (grava `grupo_id`, `n_fontes`, `categorias`, `relevancia`)
 - `python src/gerar_site.py [--dias N]` – gera `site/index.html` (Jinja2 + JS no navegador)
 - `python src/atualizar.py` – pipeline completo: coletar -> processar -> gerar site
+- `python src/kit.py [--semanal] [--so-site] [--forcar]` – kit de conteúdo: `site/kit.html` + `content/AAAA-MM-DD.md` (nunca sobrescreve sem `--forcar`)
 (Comandos das próximas fases serão adicionados aqui.)
 
 ## Fases
@@ -51,4 +52,8 @@ pip install -r requirements.txt
 - Fase 4: workflow `.github/workflows/atualizar.yml` (cron `7 * * * *`, manual e push em src/config). Banco persistido na branch órfã `dados` (force-push a cada rodada) para não poluir o histórico do `main`. Deploy via `actions/deploy-pages` (Pages com build_type=workflow). Site: https://matheusteixeira01.github.io/games-news-hub/
 - Fase 4: banco limita-se a 30 dias (`DIAS_GUARDAR`). Primeira execução real: os 20 feeds responderam a partir dos servidores do GitHub.
 - Qualquer push ao GitHub ou mudança na conta exige confirmação do usuário antes.
+- Fase 5 (decisão do usuário): textos do kit por MODELOS FIXOS + prompt pronto para colar numa IA. Sem API paga e sem chaves. Notícias só em inglês recebem aviso `[TRADUZIR]` (não há tradução automática gratuita confiável).
+- Fase 5: categoria principal do assunto = a mais frequente entre as notícias do grupo; 'rumores' só vale com 2+ notícias. Kit do dia usa as últimas 24h (48h se faltar notícia); Top 5 usa 7 dias, por isso `atualizar.py` roda `processar.py --dias 7`.
+- Fase 5: `site/kit.html` tem `noindex`; edições do usuário ficam no localStorage (por link da notícia). `content/*.md` no .gitignore (rascunhos pessoais). Horário de referência: Brasília (UTC-3 fixo).
+- Fase 5: sem imagens de terceiros; as sugestões de imagem são sempre material oficial.
 - PyYAML adicionado para ler `sources.yaml` (feedparser/Jinja2/rapidfuzz não leem YAML).

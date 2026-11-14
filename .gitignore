@@ -11,6 +11,11 @@ data/*.db
 
 # Site gerado (a Fase 4 publica via GitHub Actions, não precisa versionar)
 site/index.html
+site/kit.html
+site/kit/
+
+# Seus rascunhos de conteúdo (edições pessoais). Para versionar, apague a linha abaixo.
+content/*.md
 
 # Segredos (nunca commitar)
 .env

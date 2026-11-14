@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kit de conteúdo | Games News Hub</title>
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --bg: #f5f6fa; --card: #ffffff; --texto: #1b1d2a; --suave: #5d6178;
+    --borda: #e1e4ee; --destaque: #6c4cf5; --destaque-fundo: #ece8ff; --aviso: #b25a00; --aviso-fundo: #fff3e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0f1118; --card: #181b26; --texto: #eceef6; --suave: #9aa0b8;
+      --borda: #272b3b; --destaque: #9a82ff; --destaque-fundo: #2a2450; --aviso: #ffb55c; --aviso-fundo: #3a2a10; }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--texto);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--destaque); }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 16px; }
+  header { border-bottom: 1px solid var(--borda); padding: 14px 0; }
+  h1 { font-size: 1.25rem; margin: 0 0 4px; }
+  .suave { color: var(--suave); font-size: .85rem; }
+  .abas { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .aba, .botao { border: 1px solid var(--borda); background: var(--card); color: var(--texto);
+    padding: 6px 14px; border-radius: 999px; font: inherit; font-size: .9rem; cursor: pointer; text-decoration: none; }
+  .aba[aria-pressed="true"] { background: var(--destaque); border-color: var(--destaque); color: #fff; }
+  .botao.pequeno { padding: 2px 10px; font-size: .78rem; }
+  main { padding: 18px 0 40px; }
+  .alerta { background: var(--aviso-fundo); color: var(--aviso); border-radius: 10px; padding: 10px 12px; font-size: .88rem; margin: 12px 0; }
+  details { background: var(--card); border: 1px solid var(--borda); border-radius: 12px; margin: 12px 0; }
+  summary { cursor: pointer; padding: 12px 14px; font-weight: 600; }
+  .corpo { padding: 0 14px 14px; }
+  .dados { font-size: .88rem; color: var(--suave); margin: 0 0 10px; }
+  .dados li { margin: 2px 0; }
+  .bloco { margin: 14px 0; }
+  .bloco-topo { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .bloco-topo strong { font-size: .92rem; }
+  textarea { width: 100%; font: inherit; font-size: .88rem; line-height: 1.45; color: var(--texto);
+    background: var(--bg); border: 1px solid var(--borda); border-radius: 8px; padding: 8px 10px; resize: vertical; }
+  textarea:focus { outline: 2px solid var(--destaque); }
+  .selo { background: var(--destaque-fundo); color: var(--destaque); border-radius: 6px; padding: 1px 7px; font-size: .75rem; }
+  footer { border-top: 1px solid var(--borda); padding: 16px 0 30px; color: var(--suave); font-size: .8rem; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>🎬 Kit de conteúdo sem rosto</h1>
+    <div class="suave">
+      <a href="./">← Voltar ao hub</a> · Gerado em {{ gerado }} (horário de Brasília)
+    </div>
+    <div class="abas">
+      <button class="aba" id="aba-dia" aria-pressed="true" type="button">Kit do dia ({{ kits|length }})</button>
+      {% if top5 %}<button class="aba" id="aba-semana" aria-pressed="false" type="button">Top 5 da semana</button>{% endif %}
+      <a class="aba" href="kit/kit-do-dia.md" download>⬇ Baixar .md do dia</a>
+      {% if top5 %}<a class="aba" href="kit/top5-semana.md" download>⬇ .md Top 5</a>{% endif %}
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="alerta">
+    ✏️ Tudo aqui é <strong>rascunho editável</strong>. As edições ficam salvas só neste navegador
+    (o kit se atualiza de hora em hora; suas edições de cada notícia continuam). Nada é publicado automaticamente.<br>
+    🚫 {{ aviso_imagens }}
+  </div>
+
+  <section id="sec-dia">
+    {% for k in kits %}
+    <details {% if loop.first %}open{% endif %}>
+      <summary>{{ loop.index }}. {{ k.titulo }}</summary>
+      <div class="corpo">
+        {% if k.aviso %}<div class="alerta">{{ k.aviso }}</div>{% endif %}
+        <ul class="dados">
+          <li><strong>Fonte:</strong> {{ k.fonte }} — <a href="{{ k.link }}" target="_blank" rel="noopener noreferrer">matéria original</a></li>
+          <li><strong>Categorias:</strong> {% for c in k.categorias %}<span class="selo">{{ c }}</span> {% endfor %}</li>
+          <li><strong>Portais que cobriram ({{ k.n_fontes }}):</strong>
+            {% for f in k.fontes %}<a href="{{ f.link }}" target="_blank" rel="noopener noreferrer">{{ f.nome }}</a>{% if not loop.last %}, {% endif %}{% endfor %}</li>
+          <li><strong>Resumo:</strong> {{ k.resumo }}</li>
+        </ul>
+        {% for b in k.blocos %}
+        <div class="bloco">
+          <div class="bloco-topo">
+            <strong>{{ b.nome }}</strong>
+            <span><button class="botao pequeno copiar" type="button">Copiar</button>
+            <button class="botao pequeno restaurar" type="button" title="Voltar ao texto original gerado">Restaurar</button></span>
+          </div>
+          <textarea data-chave="kit|{{ k.link }}|{{ b.id }}" spellcheck="true">{{ b.texto }}</textarea>
+        </div>
+        {% endfor %}
+      </div>
+    </details>
+    {% endfor %}
+  </section>
+
+  {% if top5 %}
+  <section id="sec-semana" hidden>
+    {% if top5.aviso %}<div class="alerta">{{ top5.aviso }}</div>{% endif %}
+    <p class="suave">Ranking das 5 notícias mais cobertas nos últimos 7 dias (aos domingos o arquivo também é salvo em <code>content/</code> ao rodar <code>python src/kit.py</code>).</p>
+    {% for b in top5.blocos %}
+    <div class="bloco">
+      <div class="bloco-topo">
+        <strong>{{ b.nome }}</strong>
+        <span><button class="botao pequeno copiar" type="button">Copiar</button>
+        <button class="botao pequeno restaurar" type="button">Restaurar</button></span>
+      </div>
+      <textarea data-chave="top5|{{ top5.semana }}|{{ b.id }}" spellcheck="true">{{ b.texto }}</textarea>
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+</main>
+
+<footer>
+  <div class="wrap">Texto gerado por modelos fixos a partir de título, trecho curto e link de cada portal (que sempre são creditados). Revise os fatos na matéria original antes de publicar.</div>
+</footer>
+
+<script>
+"use strict";
+// ---- salvar edições no navegador (localStorage), por notícia e bloco ----
+const guardar = (k, v) => { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} };
+const ler = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const ajustar = t => { t.style.height = "auto"; t.style.height = (t.scrollHeight + 4) + "px"; };
+
+document.querySelectorAll("textarea").forEach(t => {
+  const chave = "kit:" + t.dataset.chave;
+  t.dataset.original = t.value;
+  const salvo = ler(chave);
+  if (salvo !== null) t.value = salvo;
+  t.addEventListener("input", () => { guardar(chave, t.value === t.dataset.original ? null : t.value); ajustar(t); });
+});
+// Ajusta a altura quando o bloco fica visível (textarea escondida não mede altura).
+const ajustarTodas = () => document.querySelectorAll("textarea").forEach(t => { if (t.offsetParent) ajustar(t); });
+document.querySelectorAll("details").forEach(d => d.addEventListener("toggle", ajustarTodas));
+
+document.querySelectorAll(".bloco").forEach(b => {
+  const t = b.querySelector("textarea");
+  b.querySelector(".copiar").addEventListener("click", async e => {
+    try { await navigator.clipboard.writeText(t.value); }
+    catch (err) { t.select(); document.execCommand("copy"); }
+    e.target.textContent = "Copiado ✓"; setTimeout(() => e.target.textContent = "Copiar", 1500);
+  });
+  b.querySelector(".restaurar").addEventListener("click", () => {
+    if (confirm("Voltar ao texto original gerado? Suas edições deste bloco serão perdidas.")) {
+      t.value = t.dataset.original; guardar("kit:" + t.dataset.chave, null); ajustar(t);
+    }
+  });
+});
+
+// ---- abas ----
+const abaDia = document.getElementById("aba-dia"), abaSem = document.getElementById("aba-semana");
+function mostrar(semana) {
+  document.getElementById("sec-dia").hidden = semana;
+  const s = document.getElementById("sec-semana"); if (s) s.hidden = !semana;
+  abaDia.setAttribute("aria-pressed", String(!semana));
+  if (abaSem) abaSem.setAttribute("aria-pressed", String(semana));
+  ajustarTodas();
+}
+abaDia.addEventListener("click", () => mostrar(false));
+if (abaSem) abaSem.addEventListener("click", () => mostrar(true));
+ajustarTodas();
+</script>
+</body>
+</html>

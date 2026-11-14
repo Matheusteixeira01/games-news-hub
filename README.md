@@ -14,7 +14,7 @@ Também gera um kit diário de conteúdo "sem rosto" (roteiros, carrosséis, leg
 - [x] Fase 3 – Site (hub)
 - [x] Fase 4 – Automação (GitHub Actions)
 - [x] Fase 5 – Kit de conteúdo
-- [ ] Fase 6 – Monetização (planejamento)
+- [x] Fase 6 – Monetização (planejamento): veja [docs/fase-6-monetizacao.md](docs/fase-6-monetizacao.md)
 
 ## Estrutura
 

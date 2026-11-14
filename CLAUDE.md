@@ -56,4 +56,5 @@ pip install -r requirements.txt
 - Fase 5: categoria principal do assunto = a mais frequente entre as notícias do grupo; 'rumores' só vale com 2+ notícias. Kit do dia usa as últimas 24h (48h se faltar notícia); Top 5 usa 7 dias, por isso `atualizar.py` roda `processar.py --dias 7`.
 - Fase 5: `site/kit.html` tem `noindex`; edições do usuário ficam no localStorage (por link da notícia). `content/*.md` no .gitignore (rascunhos pessoais). Horário de referência: Brasília (UTC-3 fixo).
 - Fase 5: sem imagens de terceiros; as sugestões de imagem são sempre material oficial.
+- Fase 6 (só planejamento, `docs/fase-6-monetizacao.md`): AdSense é arriscado para site agregador de RSS, então a ordem é audiência nas redes -> afiliados -> newsletter -> AdSense (com domínio próprio e conteúdo original). Fontes da pesquisa são de terceiros e precisam de conferência oficial. Antes de monetizar, revisar os termos de cada portal de origem.
 - PyYAML adicionado para ler `sources.yaml` (feedparser/Jinja2/rapidfuzz não leem YAML).

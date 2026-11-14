@@ -1,0 +1,77 @@
+# Categorias do Games News Hub e suas palavras-chave.
+#
+# Como editar:
+#  - Adicione/remova palavras em "palavras" (português e inglês juntos).
+#  - Não precisa se preocupar com maiúsculas ou acentos: "lançamento" e "lancamento" são iguais.
+#  - A palavra precisa aparecer inteira (ex.: "pc" não casa com "capcom").
+#  - Uma notícia pode ter várias categorias (ex.: "Xbox" + "Lançamentos").
+#  - Notícias sem nenhuma palavra casando ficam em "geral".
+
+# Se a fonte já é especializada, ela ganha automaticamente a categoria indicada.
+categorias_por_fonte:
+  Nintendo Life: nintendo
+  Nintendo Blast: nintendo
+  Push Square: playstation
+  PSX Brasil: playstation
+  Pure Xbox: xbox
+  PC Gamer: pc
+  Rock Paper Shotgun: pc
+  GamesIndustry.biz: industria
+
+# Colunas/séries recorrentes: títulos que contêm estes trechos NUNCA são agrupados
+# (senão "Talking Point" de 3 sites viraria um "assunto muito coberto").
+ignorar_agrupamento:
+  - talking point
+  - what are you playing
+  - lançamentos da semana
+  - coming out next week
+  - coming to xbox next week
+  - ofertas da semana
+  - deals of the week
+
+categorias:
+  lancamentos:
+    nome: Lançamentos
+    palavras: [lançamento, lancamento, lança, lançado, lançados, data de lançamento,
+      release date, launch, launches, launched, released, out now, trailer, anunciado,
+      anuncia, announced, announces, revealed, revelado, demo, dlc, expansão, expansion,
+      gameplay, estreia, estreou, chega, chegada]
+  industria:
+    nome: Indústria
+    palavras: [demissões, demissoes, demite, layoffs, layoff, laid off, aquisição, aquisicao,
+      acquisition, acquires, acquired, compra, receita, revenue, earnings, lucro, ceo,
+      lawsuit, processo, sindicato, union, fecha estúdio, studio closure, shutdown,
+      encerra, game awards, the game awards, ações, stock, aumento de preço, price increase, preço, price]
+  rumores:
+    nome: Rumores
+    palavras: [rumor, rumores, rumour, rumours, rumored, leak, leaked, leaks, vazamento,
+      vaza, vazou, vazado, reportedly, supostamente, insider, segundo fontes, teria,
+      "pode ter", alegedly]
+  esports:
+    nome: Esports
+    palavras: [esports, e-sports, esport, campeonato, championship, tournament, torneio,
+      valorant, cs2, counter-strike, dota, dota 2, league of legends, worlds, free fire,
+      mundial, major]
+  mobile:
+    nome: Mobile
+    palavras: [mobile, android, ios, iphone, celular, smartphone, app store, google play,
+      free fire, clash royale, clash of clans, genshin, pokémon go, pokemon go]
+  indie:
+    nome: Indie
+    palavras: [indie, indies, independente, independentes, early access, acesso antecipado,
+      kickstarter, solo dev, desenvolvedor solo, one-man]
+  pc:
+    nome: PC
+    palavras: [pc, steam, steam deck, epic games, epic games store, gog, nvidia, amd, rtx,
+      geforce, radeon, placa de vídeo, gpu, windows, linux, mod, mods]
+  playstation:
+    nome: PlayStation
+    palavras: [playstation, ps5, ps4, ps6, psvr, ps vr2, ps plus, psn, ps portal, sony,
+      state of play, dualsense]
+  xbox:
+    nome: Xbox
+    palavras: [xbox, game pass, microsoft, series x, series s, xcloud, bethesda, activision]
+  nintendo:
+    nome: Nintendo
+    palavras: [nintendo, switch, switch 2, joy-con, mario, zelda, pokémon, pokemon,
+      nintendo direct, kirby, metroid, splatoon, animal crossing]

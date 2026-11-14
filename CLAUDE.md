@@ -31,6 +31,7 @@ pip install -r requirements.txt
 ```
 - `python src/check_feeds.py` – testa os feeds de `config/sources.yaml`
 - `python src/coletar.py` – coleta e grava em `data/noticias.db` (idempotente: `link` é UNIQUE)
+- `python src/processar.py [--dias N]` – agrupa, classifica e pontua (grava `grupo_id`, `n_fontes`, `categorias`, `relevancia`)
 (Comandos das próximas fases serão adicionados aqui.)
 
 ## Fases
@@ -40,4 +41,7 @@ pip install -r requirements.txt
 - Fase 1: Voxel = `rss.tecmundo.com.br/feed/voxel` (o feed geral do TecMundo mistura tecnologia, descartado). Fontes extras BR: Game Blast, Nintendo Blast, PSX Brasil.
 - Fase 1: só RSS dos portais (feeds feitos para consumo por máquina); trecho limitado a 200 caracteres; links sem `utm_*`.
 - `data/noticias.db` está no .gitignore por enquanto; decidir na Fase 4 como o banco persiste entre execuções do Actions.
+- Fase 2: agrupamento com `rapidfuzz.process.extract` (token_sort_ratio >= 78; token_set_ratio só vale com >= 3 palavras em comum). Evitei `cdist` porque exige numpy (dependência pesada).
+- Fase 2: relevância = 10 × fontes distintas no grupo + bônus de recência (0–5). Títulos de colunas recorrentes (`ignorar_agrupamento`) nunca agrupam.
+- Fase 2: processar só a janela recente (3 dias); notícias antigas mantêm os valores antigos.
 - PyYAML adicionado para ler `sources.yaml` (feedparser/Jinja2/rapidfuzz não leem YAML).

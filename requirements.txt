@@ -1,0 +1,9 @@
+# Coleta de feeds RSS
+feedparser
+# Leitura do sources.yaml (configuração editável)
+PyYAML
+# Geração do site estático
+Jinja2
+# Similaridade de títulos (agrupar notícias do mesmo assunto)
+rapidfuzz
+# Banco de dados: SQLite já vem com o Python (módulo sqlite3), não precisa instalar
